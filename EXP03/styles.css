@@ -85,3 +85,7 @@ button:hover {
     padding: 5px 10px;
     cursor: pointer;
 }
+
+.likes {
+    margin-top: 10px;
+}
