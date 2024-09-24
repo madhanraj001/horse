@@ -3,21 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microblogging Example</title>
+    <title>Microblogging</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h2>Upload an Image</h2>
-        <input type="file" id="imageInput" accept="image/*">
-        <img id="uploadedImage" src="" alt="Uploaded Image" style="display: none;">
+        <h1>Microblogging</h1>
+        <div id="posts"></div>
         
-        <div class="input-group">
-            <input type="text" id="commentInput" placeholder="Add a comment..." />
-            <button id="commentButton">Post Comment</button>
-        </div>
+        <input type="file" id="imageInput" accept="image/*">
+        <input type="text" id="commentInput" placeholder="Share your feelings...">
+        <button onclick="addPost()">Post</button>
 
-        <div class="comment-section" id="commentSection"></div>
+        <div class="emoji-picker">
+            <button onclick="addEmoji('😊')">😊</button>
+            <button onclick="addEmoji('❤️')">❤️</button>
+            <button onclick="addEmoji('😂')">😂</button>
+            <button onclick="addEmoji('😢')">😢</button>
+            <button onclick="addEmoji('😡')">😡</button>
+        </div>
+        
+        <br><br>
+        <button onclick="likePost()">Like (<span id="likeCount">0</span>)</button>
+        <button onclick="dislikePost()">Dislike (<span id="dislikeCount">0</span>)</button>
     </div>
 
     <script src="script.js"></script>
