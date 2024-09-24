@@ -2,43 +2,22 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background: linear-gradient(to right, #001f3f, #005b96);
-    color: #fff;
-}
-
-.container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    color: #333;
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 20px;
+    color: #fff;
 }
 
 .post {
     border: 1px solid #fff;
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.8);
     padding: 15px;
     margin: 10px 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.post img {
-    max-width: 100%;
-    border-radius: 5px;
-}
-
-.comment {
-    margin-top: 10px;
-    padding: 5px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
 }
 
 input[type="text"], input[type="file"] {
@@ -47,8 +26,6 @@ input[type="text"], input[type="file"] {
     margin-right: 10px;
     border: 1px solid #fff;
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
 }
 
 button {
@@ -57,24 +34,18 @@ button {
     border-radius: 5px;
     cursor: pointer;
     background-color: #fff;
-    color: #001f3f;
+    color: #ff7e5f;
     transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #005b96;
+    background-color: #ff7e5f;
     color: #fff;
 }
 
-.emoji-picker {
-    margin: 10px 0;
-}
-
-.emoji-picker button {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
+img {
+    max-width: 100%;
+    border-radius: 5px;
 }
 
 .remove-btn {
@@ -84,8 +55,4 @@ button:hover {
     border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
-}
-
-.likes {
-    margin-top: 10px;
 }
