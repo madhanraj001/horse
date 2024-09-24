@@ -1,67 +1,40 @@
 let likeCount = 0;
 let dislikeCount = 0;
-const posts = JSON.parse(localStorage.getItem("posts")) || [];
+const comments = [];
 
 function updateUI() {
     document.getElementById("likeCount").textContent = likeCount;
     document.getElementById("dislikeCount").textContent = dislikeCount;
-    displayPosts();
+    displayComments();
 }
 
-function displayPosts() {
+function displayComments() {
     const postsDiv = document.getElementById("posts");
     postsDiv.innerHTML = "";
-    posts.forEach((post, index) => {
+    comments.forEach((comment, index) => {
         const postDiv = document.createElement("div");
         postDiv.className = "post";
         
         const img = document.createElement("img");
-        img.src = post.imageUrl;
+        img.src = comment.imageUrl;
         img.alt = "Uploaded image";
         
         const p = document.createElement("p");
-        p.textContent = post.text;
-
-        const commentsDiv = document.createElement("div");
-        post.comments.forEach(comment => {
-            const commentDiv = document.createElement("div");
-            commentDiv.className = "comment";
-            commentDiv.textContent = comment;
-            commentsDiv.appendChild(commentDiv);
-        });
+        p.textContent = comment.text;
 
         const removeBtn = document.createElement("button");
         removeBtn.className = "remove-btn";
         removeBtn.textContent = "Remove";
-        removeBtn.onclick = () => removePost(index);
-
-        const likeBtn = document.createElement("button");
-        likeBtn.textContent = `👍 (${post.likes})`;
-        likeBtn.onclick = () => {
-            post.likes++;
-            saveData();
-            updateUI();
-        };
-
-        const dislikeBtn = document.createElement("button");
-        dislikeBtn.textContent = `👎 (${post.dislikes})`;
-        dislikeBtn.onclick = () => {
-            post.dislikes++;
-            saveData();
-            updateUI();
-        };
+        removeBtn.onclick = () => removeComment(index);
 
         postDiv.appendChild(img);
         postDiv.appendChild(p);
-        postDiv.appendChild(commentsDiv);
         postDiv.appendChild(removeBtn);
-        postDiv.appendChild(likeBtn);
-        postDiv.appendChild(dislikeBtn);
         postsDiv.appendChild(postDiv);
     });
 }
 
-function addPost() {
+function addComment() {
     const commentInput = document.getElementById("commentInput");
     const imageInput = document.getElementById("imageInput");
 
@@ -71,7 +44,7 @@ function addPost() {
     if (commentText && file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            posts.push({ text: commentText, imageUrl: e.target.result, comments: [], likes: 0, dislikes: 0 });
+            comments.push({ text: commentText, imageUrl: e.target.result });
             commentInput.value = "";
             imageInput.value = "";
             saveData();
@@ -81,24 +54,38 @@ function addPost() {
     }
 }
 
-function removePost(index) {
-    posts.splice(index, 1);
+function removeComment(index) {
+    comments.splice(index, 1);
+    saveData();
+    updateUI();
+}
+
+function likePost() {
+    likeCount++;
+    saveData();
+    updateUI();
+}
+
+function dislikePost() {
+    dislikeCount++;
     saveData();
     updateUI();
 }
 
 function saveData() {
-    localStorage.setItem("posts", JSON.stringify(posts));
+    localStorage.setItem("likes", likeCount);
+    localStorage.setItem("dislikes", dislikeCount);
+    localStorage.setItem("comments", JSON.stringify(comments));
 }
 
 function loadData() {
+    likeCount = parseInt(localStorage.getItem("likes")) || 0;
+    dislikeCount = parseInt(localStorage.getItem("dislikes")) || 0;
+    const savedComments = localStorage.getItem("comments");
+    if (savedComments) {
+        comments.push(...JSON.parse(savedComments));
+    }
     updateUI();
-}
-
-// Emoji functionality
-function addEmoji(emoji) {
-    const commentInput = document.getElementById("commentInput");
-    commentInput.value += emoji; // Add the selected emoji to the comment input
 }
 
 // Load data on page load
