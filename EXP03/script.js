@@ -12,20 +12,39 @@ function displayComments() {
     const postsDiv = document.getElementById("posts");
     postsDiv.innerHTML = "";
     comments.forEach(comment => {
+        const postDiv = document.createElement("div");
+        postDiv.className = "post";
+        
+        const img = document.createElement("img");
+        img.src = comment.imageUrl;
+        img.alt = "Uploaded image";
+        
         const p = document.createElement("p");
-        p.textContent = comment;
-        postsDiv.appendChild(p);
+        p.textContent = comment.text;
+
+        postDiv.appendChild(img);
+        postDiv.appendChild(p);
+        postsDiv.appendChild(postDiv);
     });
 }
 
 function addComment() {
     const commentInput = document.getElementById("commentInput");
-    const comment = commentInput.value.trim();
-    if (comment) {
-        comments.push(comment);
-        commentInput.value = "";
-        saveData();
-        updateUI();
+    const imageInput = document.getElementById("imageInput");
+
+    const commentText = commentInput.value.trim();
+    const file = imageInput.files[0];
+
+    if (commentText && file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            comments.push({ text: commentText, imageUrl: e.target.result });
+            commentInput.value = "";
+            imageInput.value = "";
+            saveData();
+            updateUI();
+        };
+        reader.readAsDataURL(file);
     }
 }
 
