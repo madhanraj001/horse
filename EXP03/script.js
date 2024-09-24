@@ -84,5 +84,11 @@ function loadData() {
     updateUI();
 }
 
+// Emoji functionality
+function addEmoji(emoji) {
+    const commentInput = document.getElementById("commentInput");
+    commentInput.value += emoji; // Add the selected emoji to the comment input
+}
+
 // Load data on page load
 window.onload = loadData;
