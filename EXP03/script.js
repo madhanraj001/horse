@@ -22,6 +22,14 @@ function displayPosts() {
         const p = document.createElement("p");
         p.textContent = post.text;
 
+        const commentsDiv = document.createElement("div");
+        post.comments.forEach(comment => {
+            const commentDiv = document.createElement("div");
+            commentDiv.className = "comment";
+            commentDiv.textContent = comment;
+            commentsDiv.appendChild(commentDiv);
+        });
+
         const removeBtn = document.createElement("button");
         removeBtn.className = "remove-btn";
         removeBtn.textContent = "Remove";
@@ -29,6 +37,7 @@ function displayPosts() {
 
         postDiv.appendChild(img);
         postDiv.appendChild(p);
+        postDiv.appendChild(commentsDiv);
         postDiv.appendChild(removeBtn);
         postsDiv.appendChild(postDiv);
     });
@@ -44,7 +53,7 @@ function addPost() {
     if (commentText && file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            posts.push({ text: commentText, imageUrl: e.target.result });
+            posts.push({ text: commentText, imageUrl: e.target.result, comments: [] });
             commentInput.value = "";
             imageInput.value = "";
             saveData();
