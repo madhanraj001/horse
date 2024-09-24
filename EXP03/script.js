@@ -35,10 +35,28 @@ function displayPosts() {
         removeBtn.textContent = "Remove";
         removeBtn.onclick = () => removePost(index);
 
+        const likeBtn = document.createElement("button");
+        likeBtn.textContent = `👍 (${post.likes})`;
+        likeBtn.onclick = () => {
+            post.likes++;
+            saveData();
+            updateUI();
+        };
+
+        const dislikeBtn = document.createElement("button");
+        dislikeBtn.textContent = `👎 (${post.dislikes})`;
+        dislikeBtn.onclick = () => {
+            post.dislikes++;
+            saveData();
+            updateUI();
+        };
+
         postDiv.appendChild(img);
         postDiv.appendChild(p);
         postDiv.appendChild(commentsDiv);
         postDiv.appendChild(removeBtn);
+        postDiv.appendChild(likeBtn);
+        postDiv.appendChild(dislikeBtn);
         postsDiv.appendChild(postDiv);
     });
 }
@@ -53,7 +71,7 @@ function addPost() {
     if (commentText && file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            posts.push({ text: commentText, imageUrl: e.target.result, comments: [] });
+            posts.push({ text: commentText, imageUrl: e.target.result, comments: [], likes: 0, dislikes: 0 });
             commentInput.value = "";
             imageInput.value = "";
             saveData();
@@ -69,27 +87,11 @@ function removePost(index) {
     updateUI();
 }
 
-function likePost() {
-    likeCount++;
-    saveData();
-    updateUI();
-}
-
-function dislikePost() {
-    dislikeCount++;
-    saveData();
-    updateUI();
-}
-
 function saveData() {
-    localStorage.setItem("likes", likeCount);
-    localStorage.setItem("dislikes", dislikeCount);
     localStorage.setItem("posts", JSON.stringify(posts));
 }
 
 function loadData() {
-    likeCount = parseInt(localStorage.getItem("likes")) || 0;
-    dislikeCount = parseInt(localStorage.getItem("dislikes")) || 0;
     updateUI();
 }
 
