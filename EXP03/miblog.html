@@ -14,6 +14,14 @@
         <input type="file" id="imageInput" accept="image/*">
         <input type="text" id="commentInput" placeholder="Share your feelings...">
         <button onclick="addPost()">Post</button>
+
+        <div class="emoji-picker">
+            <button onclick="addEmoji('😊')">😊</button>
+            <button onclick="addEmoji('❤️')">❤️</button>
+            <button onclick="addEmoji('😂')">😂</button>
+            <button onclick="addEmoji('😢')">😢</button>
+            <button onclick="addEmoji('😡')">😡</button>
+        </div>
         
         <br><br>
         <button onclick="likePost()">Like (<span id="likeCount">0</span>)</button>
