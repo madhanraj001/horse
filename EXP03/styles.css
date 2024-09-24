@@ -67,3 +67,14 @@ img {
     padding: 5px 10px;
     cursor: pointer;
 }
+
+.emoji-picker {
+    margin: 10px 0;
+}
+
+.emoji-picker button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
