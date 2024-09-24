@@ -3,29 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microblogging</title>
+    <title>Microblogging Comments</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Microblogging</h1>
-        <div id="posts"></div>
-        
-        <input type="file" id="imageInput" accept="image/*">
-        <input type="text" id="commentInput" placeholder="Add a comment">
-        <button onclick="addPost()">Submit Post</button>
-        
-        <div class="emoji-picker">
-            <button onclick="addEmoji('😊')">😊</button>
-            <button onclick="addEmoji('❤️')">❤️</button>
-            <button onclick="addEmoji('😂')">😂</button>
-            <button onclick="addEmoji('😢')">😢</button>
-            <button onclick="addEmoji('😡')">😡</button>
-        </div>
-
-        <br>
-        <button onclick="likeAll()">Like (<span id="likeCount">0</span>)</button>
-        <button onclick="dislikeAll()">Dislike (<span id="dislikeCount">0</span>)</button>
+        <h1>Comments</h1>
+        <div id="comments-section"></div>
+        <textarea id="comment-input" placeholder="Add a comment..."></textarea>
+        <button id="submit-comment">Submit</button>
     </div>
 
     <script src="script.js"></script>
