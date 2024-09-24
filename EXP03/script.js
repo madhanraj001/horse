@@ -1,31 +1,31 @@
 let likeCount = 0;
 let dislikeCount = 0;
-const comments = [];
+const posts = JSON.parse(localStorage.getItem("posts")) || [];
 
 function updateUI() {
     document.getElementById("likeCount").textContent = likeCount;
     document.getElementById("dislikeCount").textContent = dislikeCount;
-    displayComments();
+    displayPosts();
 }
 
-function displayComments() {
+function displayPosts() {
     const postsDiv = document.getElementById("posts");
     postsDiv.innerHTML = "";
-    comments.forEach((comment, index) => {
+    posts.forEach((post, index) => {
         const postDiv = document.createElement("div");
         postDiv.className = "post";
         
         const img = document.createElement("img");
-        img.src = comment.imageUrl;
+        img.src = post.imageUrl;
         img.alt = "Uploaded image";
         
         const p = document.createElement("p");
-        p.textContent = comment.text;
+        p.textContent = post.text;
 
         const removeBtn = document.createElement("button");
         removeBtn.className = "remove-btn";
         removeBtn.textContent = "Remove";
-        removeBtn.onclick = () => removeComment(index);
+        removeBtn.onclick = () => removePost(index);
 
         postDiv.appendChild(img);
         postDiv.appendChild(p);
@@ -34,7 +34,7 @@ function displayComments() {
     });
 }
 
-function addComment() {
+function addPost() {
     const commentInput = document.getElementById("commentInput");
     const imageInput = document.getElementById("imageInput");
 
@@ -44,7 +44,7 @@ function addComment() {
     if (commentText && file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            comments.push({ text: commentText, imageUrl: e.target.result });
+            posts.push({ text: commentText, imageUrl: e.target.result });
             commentInput.value = "";
             imageInput.value = "";
             saveData();
@@ -54,8 +54,8 @@ function addComment() {
     }
 }
 
-function removeComment(index) {
-    comments.splice(index, 1);
+function removePost(index) {
+    posts.splice(index, 1);
     saveData();
     updateUI();
 }
@@ -75,16 +75,12 @@ function dislikePost() {
 function saveData() {
     localStorage.setItem("likes", likeCount);
     localStorage.setItem("dislikes", dislikeCount);
-    localStorage.setItem("comments", JSON.stringify(comments));
+    localStorage.setItem("posts", JSON.stringify(posts));
 }
 
 function loadData() {
     likeCount = parseInt(localStorage.getItem("likes")) || 0;
     dislikeCount = parseInt(localStorage.getItem("dislikes")) || 0;
-    const savedComments = localStorage.getItem("comments");
-    if (savedComments) {
-        comments.push(...JSON.parse(savedComments));
-    }
     updateUI();
 }
 
