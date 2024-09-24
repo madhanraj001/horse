@@ -71,7 +71,7 @@ function addPost() {
     if (commentText && file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            posts.push({ text: commentText, imageUrl: e.target.result, comments: [], likes: 0, dislikes: 0 });
+            posts.push({ text: commentText, imageUrl: e.target.result, comments: [], likes: 0, dislikes: 0 });aaa
             commentInput.value = "";
             imageInput.value = "";
             saveData();
