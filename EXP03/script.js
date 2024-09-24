@@ -11,7 +11,7 @@ function updateUI() {
 function displayComments() {
     const postsDiv = document.getElementById("posts");
     postsDiv.innerHTML = "";
-    comments.forEach(comment => {
+    comments.forEach((comment, index) => {
         const postDiv = document.createElement("div");
         postDiv.className = "post";
         
@@ -22,8 +22,14 @@ function displayComments() {
         const p = document.createElement("p");
         p.textContent = comment.text;
 
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "remove-btn";
+        removeBtn.textContent = "Remove";
+        removeBtn.onclick = () => removeComment(index);
+
         postDiv.appendChild(img);
         postDiv.appendChild(p);
+        postDiv.appendChild(removeBtn);
         postsDiv.appendChild(postDiv);
     });
 }
@@ -46,6 +52,12 @@ function addComment() {
         };
         reader.readAsDataURL(file);
     }
+}
+
+function removeComment(index) {
+    comments.splice(index, 1);
+    saveData();
+    updateUI();
 }
 
 function likePost() {
