@@ -47,3 +47,12 @@ img {
     max-width: 100%;
     border-radius: 5px;
 }
+
+.remove-btn {
+    background-color: #ff4c4c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
