@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microblogging App with Images, Date, Time, and Likes</title>
+    <title>Microblogging App with Images, Date, Time, </title>
     <link rel="stylesheet" href="miblog.css">
+    <title>Like Counter</title>
+    <style>
+        .like-button {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -19,5 +30,19 @@
         </div>
     </div>
     <script src="miblog.js"></script>
+    <div>
+        <button class="like-button" id="likeButton">Like</button>
+        <span id="likeCount">0</span> Likes
+    </div>
+
+    <script>
+        let count = 0;
+
+        document.getElementById('likeButton').addEventListener('click', function() {
+            count++;
+            document.getElementById('likeCount').innerText = count;
+        });
+    </script>
+
 </body>
 </html>
