@@ -1,109 +1,51 @@
-let likeCount = 0;
-let dislikeCount = 0;
-const posts = JSON.parse(localStorage.getItem("posts")) || [];
+const commentsSection = document.getElementById('comments-section');
+const commentInput = document.getElementById('comment-input');
+const submitButton = document.getElementById('submit-comment');
 
-function updateUI() {
-    document.getElementById("likeCount").textContent = likeCount;
-    document.getElementById("dislikeCount").textContent = dislikeCount;
-    displayPosts();
-}
-
-function displayPosts() {
-    const postsDiv = document.getElementById("posts");
-    postsDiv.innerHTML = "";
-    posts.forEach((post, index) => {
-        const postDiv = document.createElement("div");
-        postDiv.className = "post";
-
-        const img = document.createElement("img");
-        img.src = post.imageUrl;
-        img.alt = "Uploaded image";
-
-        const p = document.createElement("p");
-        p.textContent = post.text;
-
-        const commentsDiv = document.createElement("div");
-        post.comments.forEach(comment => {
-            const commentDiv = document.createElement("div");
-            commentDiv.className = "comment";
-            commentDiv.textContent = comment;
-            commentsDiv.appendChild(commentDiv);
+submitButton.addEventListener('click', () => {
+    const commentText = commentInput.value;
+    if (commentText) {
+        fetch('/comments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: commentText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayComment(data);
+            commentInput.value = '';
         });
+    }
+});
 
-        const commentInput = document.createElement("input");
-        commentInput.type = "text";
-        commentInput.placeholder = "Add a comment";
-
-        const addCommentButton = document.createElement("button");
-        addCommentButton.textContent = "Submit Comment";
-        addCommentButton.onclick = () => {
-            if (commentInput.value.trim()) {
-                post.comments.push(commentInput.value.trim());
-                saveData();
-                updateUI();
-                commentInput.value = ""; // Clear input after submitting
-            }
-        };
-
-        const removeBtn = document.createElement("button");
-        removeBtn.className = "remove-btn";
-        removeBtn.textContent = "Remove";
-        removeBtn.onclick = () => removePost(index);
-
-        postDiv.appendChild(img);
-        postDiv.appendChild(p);
-        postDiv.appendChild(commentsDiv);
-        postDiv.appendChild(commentInput);
-        postDiv.appendChild(addCommentButton);
-        postDiv.appendChild(removeBtn);
-        postsDiv.appendChild(postDiv);
-    });
+function displayComment(comment) {
+    const commentDiv = document.createElement('div');
+    commentDiv.className = 'comment';
+    commentDiv.innerHTML = `
+        <p>${comment.text}</p>
+        <button class="like" onclick="likeComment(${comment.id})">Like (${comment.likes})</button>
+        <button class="dislike" onclick="dislikeComment(${comment.id})">Dislike (${comment.dislikes})</button>
+    `;
+    commentDiv.dataset.id = comment.id;
+    commentsSection.prepend(commentDiv);
 }
 
-function addPost() {
-    const commentInput = document.getElementById("commentInput");
-    const imageInput = document.getElementById("imageInput");
+function likeComment(id) {
+    fetch(`/comments/${id}/like`, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => updateComment(data));
+}
 
-    const commentText = commentInput.value.trim();
-    const file = imageInput.files[0];
+function dislikeComment(id) {
+    fetch(`/comments/${id}/dislike`, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => updateComment(data));
+}
 
-    if (commentText && file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            posts.push({ text: commentText, imageUrl: e.target.result, comments: [] });
-            commentInput.value = "";
-            imageInput.value = "";
-            saveData();
-            updateUI();
-        };
-        reader.readAsDataURL(file);
+function updateComment(comment) {
+    const commentDiv = Array.from(commentsSection.children).find(div => div.dataset.id == comment.id);
+    if (commentDiv) {
+        commentDiv.querySelector('.like').innerText = `Like (${comment.likes})`;
+        commentDiv.querySelector('.dislike').innerText = `Dislike (${comment.dislikes})`;
     }
 }
-
-function removePost(index) {
-    posts.splice(index, 1);
-    saveData();
-    updateUI();
-}
-
-function saveData() {
-    localStorage.setItem("posts", JSON.stringify(posts));
-}
-
-function addEmoji(emoji) {
-    const commentInput = document.getElementById("commentInput");
-    commentInput.value += emoji; // Add the selected emoji to the comment input
-}
-
-function likeAll() {
-    likeCount++;
-    updateUI();
-}
-
-function dislikeAll() {
-    dislikeCount++;
-    updateUI();
-}
-
-// Load data on page load
-window.onload = updateUI;
