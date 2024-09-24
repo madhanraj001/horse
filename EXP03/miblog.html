@@ -7,16 +7,26 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Microblogging</h1>
-    <div id="posts"></div>
-    
-    <input type="file" id="imageInput" accept="image/*">
-    <input type="text" id="commentInput" placeholder="Add a comment">
-    <button onclick="addComment()">Submit Comment</button>
-    
-    <br><br>
-    <button onclick="likePost()">Like (<span id="likeCount">0</span>)</button>
-    <button onclick="dislikePost()">Dislike (<span id="dislikeCount">0</span>)</button>
+    <div class="container">
+        <h1>Microblogging</h1>
+        <div id="posts"></div>
+        
+        <input type="file" id="imageInput" accept="image/*">
+        <input type="text" id="commentInput" placeholder="Add a comment">
+        <button onclick="addPost()">Submit Post</button>
+        
+        <div class="emoji-picker">
+            <button onclick="addEmoji('😊')">😊</button>
+            <button onclick="addEmoji('❤️')">❤️</button>
+            <button onclick="addEmoji('😂')">😂</button>
+            <button onclick="addEmoji('😢')">😢</button>
+            <button onclick="addEmoji('😡')">😡</button>
+        </div>
+
+        <br>
+        <button onclick="likeAll()">Like (<span id="likeCount">0</span>)</button>
+        <button onclick="dislikeAll()">Dislike (<span id="dislikeCount">0</span>)</button>
+    </div>
 
     <script src="script.js"></script>
 </body>
