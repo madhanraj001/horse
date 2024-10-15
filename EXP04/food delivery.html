@@ -3,133 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Delivery App</title>
+    <title>Food Delivery Website</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Verdana', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            background-color: #f0f8ff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #1c1c1c;
+            color: #ffffff;
         }
 
         header {
-            background-color: #ffcc00;
-            padding: 10px 0;
+            background-color: #6c757d;
+            color: white;
             text-align: center;
+            padding: 1.5rem 0;
+            position: relative;
         }
 
-        #menu {
+        nav {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        nav button {
+            padding: 10px 15px;
+            background-color: #e94e77;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        nav button:hover {
+            background-color: #d03b66;
+        }
+
+        #foodOptions {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
         }
 
-        .dish {
-            border: 1px solid #ccc;
-            padding: 10px;
-            width: 30%;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        #foodOptions button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        .dish img {
-            width: 100%;
-            height: auto;
+        #foodOptions button:hover {
+            background-color: #0056b3;
         }
 
-        input[type="number"] {
-            width: 50px;
-            margin-right: 10px;
-        }
-
-        #cart, #orders {
-            margin-top: 20px;
-            border-top: 2px solid #ccc;
-            padding-top: 10px;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Food Delivery App</h1>
-    </header>
-
-    <main>
-        <section id="menu">
-            <div class="dish">
-                <h2>Burger</h2>
-                <p>$10</p>
-                <p>Delicious beef burger with fresh lettuce and tomatoes.</p>
-                <img src="images/burger.jpg" alt="burger">
-                <input type="number" id="burgerQty" min="0" value="0" />
-                <button onclick="addToCart('Burger', 10, document.getElementById('burgerQty').value)">Add to Cart</button>
-            </div>
-
-            <div class="dish">
-                <h2>Pizza</h2>
-                <p>$15</p>
-                <p>Cheesy pizza topped with pepperoni and olives.</p>
-                <img src="images/pizza.jpg" alt="pizza">
-                <input type="number" id="pizzaQty" min="0" value="0" />
-                <button onclick="addToCart('Pizza', 15, document.getElementById('pizzaQty').value)">Add to Cart</button>
-            </div>
-
-            <div class="dish">
-                <h2>Pasta</h2>
-                <p>$12</p>
-                <p>Creamy pasta with chicken and mushroom sauce.</p>
-                <img src="images/pasta.jpg" alt="pasta">
-                <input type="number" id="pastaQty" min="0" value="0" />
-                <button onclick="addToCart('Pasta', 12, document.getElementById('pastaQty').value)">Add to Cart</button>
-            </div>
-        </section>
-
-        <section id="cart">
-            <h2>Cart</h2>
-            <ul id="cartItems"></ul>
-            <p>Total: $<span id="totalPrice">0</span></p>
-            <button onclick="submitOrder()">Submit Order</button>
-        </section>
-
-        <section id="orders">
-            <h2>Your Orders</h2>
-            <ul id="pastOrders"></ul>
-        </section>
-    </main>
-
-    <script>
-        let cart = [];
-        let total = 0;
-        let pastOrders = [];
-
-        function addToCart(itemName, itemPrice, quantity) {
-            quantity = parseInt(quantity);
-            if (quantity > 0) {
-                const existingItem = cart.find(item => item.name === itemName);
-                if (existingItem) {
-                    existingItem.quantity += quantity;
-                    existingItem.totalPrice += itemPrice * quantity;
-                } else {
-                    cart.push({ name: itemName, price: itemPrice, quantity, totalPrice: itemPrice * quantity });
-                }
-                total += itemPrice * quantity;
-                updateCart();
-                document.querySelector(`#${itemName.toLowerCase()}Qty`).value = 0;
-            } else {
-                alert('Please enter a valid quantity.');
-            }
-        }
-
-        function updateCart() {
-            const cartItemsElement = document.getElementById('cartItems');
-            cartItemsElement.innerHTML = '';
-            
-            cart.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = `${item.name} - Quantity: ${item.quantity}, Total: $${item.totalPrice.toFixed(2)}`;
-                cartItemsElement.appendChild(li);
-            });
-
-            document.getElementById('totalPrice').textContent = total.toFixed(2);
-        }
-
-        function submitOrder() {
-            if (ca
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+        
