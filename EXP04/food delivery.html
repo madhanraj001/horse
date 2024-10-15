@@ -12,12 +12,10 @@
             background-color: #f0f8ff;
             transition: background-color 0.3s, color 0.3s;
         }
-
         body.dark-mode {
             background-color: #1c1c1c;
             color: #ffffff;
         }
-
         header {
             background-color: #6c757d;
             color: white;
@@ -25,13 +23,11 @@
             padding: 1.5rem 0;
             position: relative;
         }
-
         nav {
             position: absolute;
             right: 20px;
             top: 20px;
         }
-
         nav button {
             padding: 10px 15px;
             background-color: #e94e77;
@@ -41,17 +37,14 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
         nav button:hover {
             background-color: #d03b66;
         }
-
         #foodOptions {
             display: flex;
             justify-content: center;
             margin: 20px 0;
         }
-
         #foodOptions button {
             margin: 0 10px;
             padding: 10px 20px;
@@ -62,14 +55,253 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
         #foodOptions button:hover {
             background-color: #0056b3;
         }
-
         .modal {
             display: none;
             position: fixed;
             z-index: 1;
             left: 0;
-        
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ccc;
+            margin: 5% auto;
+            padding: 20px;
+            width: 80%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .close {
+            color: #e94e77;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #d03b66;
+            cursor: pointer;
+        }
+        .dish {
+            background-color: #e1f5fe;
+            border: 1px solid #b0bec5;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+        .dish:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        button.add-to-cart {
+            background-color: #66bb6a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button.add-to-cart:hover {
+            background-color: #4caf50;
+        }
+        #cart {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        #cartItems {
+            list-style-type: none;
+            padding: 0;
+        }
+        #totalPrice {
+            font-weight: bold;
+            color: #e94e77;
+        }
+        .star {
+            color: #FFD700;
+            cursor: pointer;
+        }
+        .star:hover {
+            color: #FFB700;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Food Delivery Website</h1>
+        <nav>
+            <button id="toggleMode" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="foodOptions">
+            <button onclick="showShop('burger')">Burger</button>
+            <button onclick="showShop('pizza')">Pizza</button>
+            <button onclick="showShop('pasta')">Pasta</button>
+            <button onclick="showShop('noodles')">Noodles</button>
+        </section>
+
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 id="shopTitle"></h2>
+                <div id="shopDishes"></div>
+            </div>
+        </div>
+
+        <section id="cart">
+            <h2>Cart</h2>
+            <ul id="cartItems"></ul>
+            <p>Total: $<span id="totalPrice">0.00</span></p>
+            <button onclick="checkout()">Checkout</button>
+            <button onclick="clearCart()">Clear Cart</button>
+        </section>
+
+        <section id="orders">
+            <h2>Your Orders</h2>
+            <ul id="pastOrders"></ul>
+        </section>
+    </main>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalPrice = parseFloat(localStorage.getItem('totalPrice')) || 0;
+        let currentShop = 'burger'; // Default shop
+        let pastOrders = JSON.parse(localStorage.getItem('pastOrders')) || [];
+
+        const shops = {
+            burger: [
+                { name: 'The Classic Burger', price: 10, rating: 4.5, userRating: 0 },
+                { name: 'Cheesy Delight Burger', price: 12, rating: 4.0, userRating: 0 },
+                { name: 'Bacon Explosion Burger', price: 13, rating: 4.8, userRating: 0 },
+                { name: 'Garden Fresh Veggie Burger', price: 9, rating: 4.2, userRating: 0 },
+                { name: 'Spicy Jalapeño Burger', price: 11, rating: 4.7, userRating: 0 }
+            ],
+            pizza: [
+                { name: 'Margherita Masterpiece', price: 15, rating: 4.6, userRating: 0 },
+                { name: 'Pepperoni Paradise', price: 16, rating: 4.9, userRating: 0 },
+                { name: 'BBQ Chicken Feast', price: 17, rating: 4.4, userRating: 0 },
+                { name: 'Veggie Lover’s Delight', price: 14, rating: 4.3, userRating: 0 },
+                { name: 'Four Cheese Indulgence', price: 18, rating: 4.1, userRating: 0 }
+            ],
+            pasta: [
+                { name: 'Spaghetti Bolognese Bliss', price: 12, rating: 4.5, userRating: 0 },
+                { name: 'Fettuccine Alfredo Delight', price: 14, rating: 4.7, userRating: 0 },
+                { name: 'Penne Arrabbiata Adventure', price: 11, rating: 4.2, userRating: 0 },
+                { name: 'Lasagna Layers of Love', price: 15, rating: 4.6, userRating: 0 },
+                { name: 'Seafood Pasta Sensation', price: 18, rating: 4.8, userRating: 0 }
+            ],
+            noodles: [
+                { name: 'Hearty Chicken Noodle Soup', price: 9, rating: 4.3, userRating: 0 },
+                { name: 'Pad Thai Paradise', price: 13, rating: 4.7, userRating: 0 },
+                { name: 'Chow Mein Charm', price: 10, rating: 4.5, userRating: 0 },
+                { name: 'Authentic Ramen Retreat', price: 12, rating: 4.8, userRating: 0 },
+                { name: 'Spicy Noodle Challenge', price: 11, rating: 4.4, userRating: 0 }
+            ]
+        };
+
+        function showShop(shop) {
+            currentShop = shop;
+            displayDishes(shops[shop]);
+            document.getElementById('modal').style.display = "block";
+            document.getElementById('shopTitle').innerText = `${shop.charAt(0).toUpperCase() + shop.slice(1)} Shop`;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = "none";
+        }
+
+        function displayDishes(dishes) {
+            const shopDishes = document.getElementById('shopDishes');
+            shopDishes.innerHTML = '';
+            dishes.forEach(dish => {
+                const dishDiv = document.createElement('div');
+                dishDiv.className = 'dish';
+                dishDiv.innerHTML = `
+                    <h3>${dish.name} - $${dish.price.toFixed(2)}</h3>
+                    <p>Rating: ${dish.rating} <span class="star">&#9733;</span></p>
+                    <button class="add-to-cart" onclick="addToCart('${dish.name}', ${dish.price})">Add to Cart</button>
+                `;
+                shopDishes.appendChild(dishDiv);
+            });
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            totalPrice += price;
+            updateCart();
+        }
+
+        function updateCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            localStorage.setItem('totalPrice', totalPrice);
+            document.getElementById('totalPrice').innerText = totalPrice.toFixed(2);
+            displayCartItems();
+        }
+
+        function displayCartItems() {
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.innerText = `${item.name} - $${item.price.toFixed(2)}`;
+                cartItems.appendChild(li);
+            });
+        }
+
+        function checkout() {
+            if (cart.length > 0) {
+                pastOrders.push({ items: cart, total: totalPrice });
+                localStorage.setItem('pastOrders', JSON.stringify(pastOrders));
+                clearCart();
+                alert('Thank you for your order!');
+            } else {
+                alert('Your cart is empty!');
+            }
+            displayPastOrders();
+        }
+
+        function clearCart() {
+            cart = [];
+            totalPrice = 0;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            localStorage.setItem('totalPrice', totalPrice);
+            document.getElementById('totalPrice').innerText = '0.00';
+            displayCartItems();
+        }
+
+        function displayPastOrders() {
+            const pastOrdersList = document.getElementById('pastOrders');
+            pastOrdersList.innerHTML = '';
+            pastOrders.forEach(order => {
+                const li = document.createElement('li');
+                li.innerText = `Order Total: $${order.total.toFixed(2)}`;
+                pastOrdersList.appendChild(li);
+            });
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Initial load
+        displayCartItems();
+        displayPastOrders();
+    </script>
+</body>
+</html>
