@@ -40,7 +40,7 @@
             margin-right: 10px;
         }
 
-        #cart {
+        #cart, #orders {
             margin-top: 20px;
             border-top: 2px solid #ccc;
             padding-top: 10px;
@@ -88,11 +88,17 @@
             <p>Total: $<span id="totalPrice">0</span></p>
             <button onclick="submitOrder()">Submit Order</button>
         </section>
+
+        <section id="orders">
+            <h2>Your Orders</h2>
+            <ul id="pastOrders"></ul>
+        </section>
     </main>
 
     <script>
         let cart = [];
         let total = 0;
+        let pastOrders = [];
 
         function addToCart(itemName, itemPrice, quantity) {
             quantity = parseInt(quantity);
@@ -126,23 +132,4 @@
         }
 
         function submitOrder() {
-            if (cart.length === 0) {
-                alert('Your cart is empty! Please add items to the cart before submitting.');
-            } else {
-                let orderSummary = 'Your order details:\n';
-                cart.forEach(item => {
-                    orderSummary += `${item.name} - Quantity: ${item.quantity}, Total: $${item.totalPrice.toFixed(2)}\n`;
-                });
-                orderSummary += `Grand Total: $${total.toFixed(2)}`;
-                
-                alert(orderSummary);
-                
-                // Reset cart after submitting
-                cart = [];
-                total = 0;
-                updateCart();
-            }
-        }
-    </script>
-</body>
-</html>
+            if (ca
