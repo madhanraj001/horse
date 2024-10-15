@@ -4,7 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Delivery App</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #ffcc00;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        #menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .dish {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 30%;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dish img {
+            width: 100%;
+            height: auto;
+        }
+
+        input[type="number"] {
+            width: 50px;
+            margin-right: 10px;
+        }
+
+        #cart {
+            margin-top: 20px;
+            border-top: 2px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -45,10 +86,63 @@
             <h2>Cart</h2>
             <ul id="cartItems"></ul>
             <p>Total: $<span id="totalPrice">0</span></p>
-            <button onclick="submitOrder()">submitOrder</button>
+            <button onclick="submitOrder()">Submit Order</button>
         </section>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        let cart = [];
+        let total = 0;
+
+        function addToCart(itemName, itemPrice, quantity) {
+            quantity = parseInt(quantity);
+            if (quantity > 0) {
+                const existingItem = cart.find(item => item.name === itemName);
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                    existingItem.totalPrice += itemPrice * quantity;
+                } else {
+                    cart.push({ name: itemName, price: itemPrice, quantity, totalPrice: itemPrice * quantity });
+                }
+                total += itemPrice * quantity;
+                updateCart();
+                document.querySelector(`#${itemName.toLowerCase()}Qty`).value = 0;
+            } else {
+                alert('Please enter a valid quantity.');
+            }
+        }
+
+        function updateCart() {
+            const cartItemsElement = document.getElementById('cartItems');
+            cartItemsElement.innerHTML = '';
+            
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - Quantity: ${item.quantity}, Total: $${item.totalPrice.toFixed(2)}`;
+                cartItemsElement.appendChild(li);
+            });
+
+            document.getElementById('totalPrice').textContent = total.toFixed(2);
+        }
+
+        function submitOrder() {
+            if (cart.length === 0) {
+                alert('Your cart is empty! Please add items to the cart before submitting.');
+            } else {
+                let orderSummary = 'Your order details:\n';
+                cart.forEach(item => {
+                    orderSummary += `${item.name} - Quantity: ${item.quantity}, Total: $${item.totalPrice.toFixed(2)}\n`;
+                });
+                orderSummary += `Grand Total: $${total.toFixed(2)}`;
+                
+                alert(orderSummary);
+                
+                // Reset cart after submitting
+                cart = [];
+                total = 0;
+                updateCart();
+            }
+        }
+    </script>
 </body>
 </html>
