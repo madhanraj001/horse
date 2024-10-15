@@ -37,11 +37,16 @@ function updateCart() {
     document.getElementById('totalPrice').textContent = total.toFixed(2);
 }
 
-function checkout() {
+function submitOrder() {
     if (cart.length === 0) {
-        alert('Your cart is empty!');
+        alert('Your cart is empty! please add items to the cart before submitting.');
     } else {
-        alert(`Thank you for your order!\nTotal: $${total.toFixed(2)}`);
+        let orderSummary = 'your order details:\n';
+        cart.forEach(item =>{
+            orderSummary +=`${item.name} - Quantity: ${item.quantity}, Total: $${item.totalprice.tofixed(2)}\n`;
+        });
+        orderSummary += `grand total: $${total.tofixed(2)}`;
+        alert(orderSummary);
         // Reset cart
         cart = [];
         total = 0;
