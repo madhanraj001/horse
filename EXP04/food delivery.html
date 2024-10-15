@@ -138,6 +138,16 @@
         .star:hover {
             color: #FFB700;
         }
+        #reviews {
+            margin-top: 20px;
+        }
+        .review {
+            background-color: #f0f8ff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -150,10 +160,10 @@
 
     <main>
         <section id="foodOptions">
-            <button onclick="showShop('burger')">Burger</button>
-            <button onclick="showShop('pizza')">Pizza</button>
-            <button onclick="showShop('pasta')">Pasta</button>
-            <button onclick="showShop('noodles')">Noodles</button>
+            <button onclick="showShop('burger')">Burger Shop</button>
+            <button onclick="showShop('pizza')">Pizza Shop</button>
+            <button onclick="showShop('pasta')">Pasta Shop</button>
+            <button onclick="showShop('noodles')">Noodle Shop</button>
         </section>
 
         <div id="modal" class="modal">
@@ -161,6 +171,12 @@
                 <span class="close" onclick="closeModal()">&times;</span>
                 <h2 id="shopTitle"></h2>
                 <div id="shopDishes"></div>
+                <div id="reviews">
+                    <h3>Reviews</h3>
+                    <div id="reviewList"></div>
+                    <input type="text" id="reviewInput" placeholder="Write a review..." />
+                    <button onclick="submitReview()">Submit Review</button>
+                </div>
             </div>
         </div>
 
@@ -181,45 +197,48 @@
     <script>
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let totalPrice = parseFloat(localStorage.getItem('totalPrice')) || 0;
-        let currentShop = 'burger'; // Default shop
+        let currentShop = 'burger';
         let pastOrders = JSON.parse(localStorage.getItem('pastOrders')) || [];
+        let reviews = JSON.parse(localStorage.getItem('reviews')) || { burger: [], pizza: [], pasta: [], noodles: [] };
 
         const shops = {
             burger: [
-                { name: 'The Classic Burger', price: 10, rating: 4.5, userRating: 0 },
-                { name: 'Cheesy Delight Burger', price: 12, rating: 4.0, userRating: 0 },
-                { name: 'Bacon Explosion Burger', price: 13, rating: 4.8, userRating: 0 },
-                { name: 'Garden Fresh Veggie Burger', price: 9, rating: 4.2, userRating: 0 },
-                { name: 'Spicy Jalapeño Burger', price: 11, rating: 4.7, userRating: 0 }
+                { name: 'The Classic Burger', price: 10, rating: 4.5 },
+                { name: 'Cheesy Delight Burger', price: 12, rating: 4.0 },
+                { name: 'Bacon Explosion Burger', price: 13, rating: 4.8 },
+                { name: 'Garden Fresh Veggie Burger', price: 9, rating: 4.2 },
+                { name: 'Spicy Jalapeño Burger', price: 11, rating: 4.7 }
             ],
             pizza: [
-                { name: 'Margherita Masterpiece', price: 15, rating: 4.6, userRating: 0 },
-                { name: 'Pepperoni Paradise', price: 16, rating: 4.9, userRating: 0 },
-                { name: 'BBQ Chicken Feast', price: 17, rating: 4.4, userRating: 0 },
-                { name: 'Veggie Lover’s Delight', price: 14, rating: 4.3, userRating: 0 },
-                { name: 'Four Cheese Indulgence', price: 18, rating: 4.1, userRating: 0 }
+                { name: 'Margherita Masterpiece', price: 15, rating: 4.6 },
+                { name: 'Pepperoni Paradise', price: 16, rating: 4.9 },
+                { name: 'BBQ Chicken Feast', price: 17, rating: 4.4 },
+                { name: 'Veggie Lover’s Delight', price: 14, rating: 4.3 },
+                { name: 'Four Cheese Indulgence', price: 18, rating: 4.1 }
             ],
             pasta: [
-                { name: 'Spaghetti Bolognese Bliss', price: 12, rating: 4.5, userRating: 0 },
-                { name: 'Fettuccine Alfredo Delight', price: 14, rating: 4.7, userRating: 0 },
-                { name: 'Penne Arrabbiata Adventure', price: 11, rating: 4.2, userRating: 0 },
-                { name: 'Lasagna Layers of Love', price: 15, rating: 4.6, userRating: 0 },
-                { name: 'Seafood Pasta Sensation', price: 18, rating: 4.8, userRating: 0 }
+                { name: 'Spaghetti Bolognese Bliss', price: 12, rating: 4.5 },
+                { name: 'Fettuccine Alfredo Delight', price: 14, rating: 4.7 },
+                { name: 'Penne Arrabbiata Adventure', price: 11, rating: 4.2 },
+                { name: 'Lasagna Layers of Love', price: 15, rating: 4.6 },
+                { name: 'Seafood Pasta Sensation', price: 18, rating: 4.8 }
             ],
             noodles: [
-                { name: 'Hearty Chicken Noodle Soup', price: 9, rating: 4.3, userRating: 0 },
-                { name: 'Pad Thai Paradise', price: 13, rating: 4.7, userRating: 0 },
-                { name: 'Chow Mein Charm', price: 10, rating: 4.5, userRating: 0 },
-                { name: 'Authentic Ramen Retreat', price: 12, rating: 4.8, userRating: 0 },
-                { name: 'Spicy Noodle Challenge', price: 11, rating: 4.4, userRating: 0 }
+                { name: 'Hearty Chicken Noodle Soup', price: 9, rating: 4.3 },
+                { name: 'Pad Thai Paradise', price: 13, rating: 4.7 },
+                { name: 'Chow Mein Charm', price: 10, rating: 4.5 },
+                { name: 'Authentic Ramen Retreat', price: 12, rating: 4.8 },
+                { name: 'Spicy Noodle Challenge', price: 11, rating: 4.4 }
             ]
         };
 
         function showShop(shop) {
             currentShop = shop;
             displayDishes(shops[shop]);
-            document.getElementById('modal').style.display = "block";
             document.getElementById('shopTitle').innerText = `${shop.charAt(0).toUpperCase() + shop.slice(1)} Shop`;
+            document.getElementById('reviewInput').value = '';
+            displayReviews(shop);
+            document.getElementById('modal').style.display = "block";
         }
 
         function closeModal() {
@@ -292,6 +311,27 @@
                 const li = document.createElement('li');
                 li.innerText = `Order Total: $${order.total.toFixed(2)}`;
                 pastOrdersList.appendChild(li);
+            });
+        }
+
+        function submitReview() {
+            const reviewInput = document.getElementById('reviewInput').value;
+            if (reviewInput) {
+                reviews[currentShop].push(reviewInput);
+                localStorage.setItem('reviews', JSON.stringify(reviews));
+                displayReviews(currentShop);
+                document.getElementById('reviewInput').value = '';
+            }
+        }
+
+        function displayReviews(shop) {
+            const reviewList = document.getElementById('reviewList');
+            reviewList.innerHTML = '';
+            reviews[shop].forEach(review => {
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = 'review';
+                reviewDiv.innerText = review;
+                reviewList.appendChild(reviewDiv);
             });
         }
 
