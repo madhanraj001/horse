@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Delivery </title>
+    <title>Food Delivery</title>
     <style>
         body {
             font-family: 'Verdana', sans-serif;
@@ -148,6 +148,18 @@
             padding: 10px;
             margin-top: 10px;
         }
+        #addressInput {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 400px;
+        }
+        #addressLabel {
+            margin-right: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -159,6 +171,11 @@
     </header>
 
     <main>
+        <section>
+            <label id="addressLabel" for="addressInput">Delivery Address:</label>
+            <input type="text" id="addressInput" placeholder="Enter your delivery address" />
+        </section>
+
         <section id="foodOptions">
             <button onclick="showShop('burger')">Burger Shop</button>
             <button onclick="showShop('pizza')">Pizza Shop</button>
@@ -284,11 +301,16 @@
         }
 
         function checkout() {
+            const address = document.getElementById('addressInput').value;
             if (cart.length > 0) {
-                pastOrders.push({ items: cart, total: totalPrice });
-                localStorage.setItem('pastOrders', JSON.stringify(pastOrders));
-                clearCart();
-                alert('Thank you for your order!');
+                if (address) {
+                    pastOrders.push({ items: cart, total: totalPrice, address: address });
+                    localStorage.setItem('pastOrders', JSON.stringify(pastOrders));
+                    clearCart();
+                    alert('Thank you for your order! It will be delivered to: ' + address);
+                } else {
+                    alert('Please enter a delivery address!');
+                }
             } else {
                 alert('Your cart is empty!');
             }
@@ -309,7 +331,7 @@
             pastOrdersList.innerHTML = '';
             pastOrders.forEach(order => {
                 const li = document.createElement('li');
-                li.innerText = `Order Total: $${order.total.toFixed(2)}`;
+                li.innerText = `Order Total: $${order.total.toFixed(2)} - Address: ${order.address}`;
                 pastOrdersList.appendChild(li);
             });
         }
