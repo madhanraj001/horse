@@ -1,13 +1,23 @@
 let cart = [];
 let total = 0;
 
-function addToCart(itemName, itemPrice) {
-    // Add item to cart
-    cart.push({ name: itemName, price: itemPrice });
-    total += itemPrice;
-
-    // Update cart display
-    updateCart();
+function addToCart(itemName, itemPrice, quantity) {
+    quantity = parseInt(quantity);
+    if (quantity > 0) {
+        // Check if item already exists in the cart
+        const existingItem = cart.find(item => item.name === itemName);
+        if (existingItem) {
+            existingItem.quantity += quantity; // Update quantity
+            existingItem.totalPrice += itemPrice * quantity; // Update total price
+        } else {
+            // Add new item to cart
+            cart.push({ name: itemName, price: itemPrice, quantity, totalPrice: itemPrice * quantity });
+        }
+        total += itemPrice * quantity; // Update overall total
+        updateCart();
+    } else {
+        alert('Please enter a valid quantity.');
+    }
 }
 
 function updateCart() {
@@ -17,7 +27,7 @@ function updateCart() {
     // Display each item in the cart
     cart.forEach(item => {
         const li = document.createElement('li');
-        li.textContent = `${item.name} - $${item.price}`;
+        li.textContent = `${item.name} - $${item.price} x ${item.quantity} = $${item.totalPrice.toFixed(2)}`;
         cartItemsElement.appendChild(li);
     });
 
