@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Delivery App</title>
-    <link rel="stylesheet" href="food delivery.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
@@ -17,24 +17,27 @@
                 <h2>Burger</h2>
                 <p>$10</p>
                 <p>Delicious beef burger with fresh lettuce and tomatoes.</p>
-                <img src="C:\Users\IT_USER46\Pictures\burger.jpg" alt="burger">
-                <button onclick="addToCart('Burger', 10)">Add to Cart</button>
+                <img src="images/burger.jpg" alt="burger">
+                <input type="number" id="burgerQty" min="0" value="0" />
+                <button onclick="addToCart('Burger', 10, document.getElementById('burgerQty').value)">Add to Cart</button>
             </div>
 
             <div class="dish">
                 <h2>Pizza</h2>
                 <p>$15</p>
                 <p>Cheesy pizza topped with pepperoni and olives.</p>
-                <img src="C:\Users\IT_USER46\Pictures\pizza.jpg" alt="pizza">
-                <button onclick="addToCart('Pizza', 15)">Add to Cart</button>
+                <img src="images/pizza.jpg" alt="pizza">
+                <input type="number" id="pizzaQty" min="0" value="0" />
+                <button onclick="addToCart('Pizza', 15, document.getElementById('pizzaQty').value)">Add to Cart</button>
             </div>
 
             <div class="dish">
                 <h2>Pasta</h2>
-                <img src="C:\Users\IT_USER46\Pictures\pasta.jpg" alt="pasta">
                 <p>$12</p>
                 <p>Creamy pasta with chicken and mushroom sauce.</p>
-                <button onclick="addToCart('Pasta', 12)">Add to Cart</button>
+                <img src="images/pasta.jpg" alt="pasta">
+                <input type="number" id="pastaQty" min="0" value="0" />
+                <button onclick="addToCart('Pasta', 12, document.getElementById('pastaQty').value)">Add to Cart</button>
             </div>
         </section>
 
@@ -46,6 +49,6 @@
         </section>
     </main>
 
-    <script src="food delivery.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
