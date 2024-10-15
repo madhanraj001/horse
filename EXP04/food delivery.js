@@ -15,6 +15,8 @@ function addToCart(itemName, itemPrice, quantity) {
         }
         total += itemPrice * quantity; // Update overall total
         updateCart();
+        // Reset quantity input
+        document.querySelector(`#${itemName.toLowerCase()}Qty`).value = 0;
     } else {
         alert('Please enter a valid quantity.');
     }
