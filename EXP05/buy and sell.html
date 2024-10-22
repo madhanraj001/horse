@@ -3,208 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLX</title>
+    <title>PLX Classifieds App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e0f7fa; /* Light cyan background */
-            color: #212121; /* Dark text for contrast */
+            background-color: #f5f5f5;
             margin: 0;
             padding: 20px;
         }
         .container {
             max-width: 600px;
             margin: auto;
-            background: #ffffff; /* White background for the container */
+            background: #fff;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            color: #00796b; /* Dark teal heading */
-            text-align: left; /* Align the heading to the left */
-            margin: 0; /* Remove default margin */
+            text-align: center;
+            color: #333;
         }
-        h2 {
-            color: #00796b; /* Dark teal subheadings */
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-        input {
-            margin-bottom: 10px;
+        input, button, select {
+            width: 100%;
             padding: 10px;
-            border: 1px solid #00796b;
+            margin: 10px 0;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            background: #b2dfdb; /* Light teal background for inputs */
-            color: #212121;
         }
         button {
-            padding: 10px;
-            background: #009688; /* Teal button */
-            color: white;
+            background: #28a745;
+            color: #fff;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
         button:hover {
-            background: #00796b; /* Darker teal on hover */
+            background: #218838;
         }
-        #product-list, #hot-sales {
-            list-style-type: none;
+        #product-list {
+            list-style: none;
             padding: 0;
         }
-        #product-list li, #hot-sales li {
-            background: #ffffff; /* White background for products */
+        #product-list li {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             margin: 10px 0;
-            padding: 15px; /* Increased padding for better spacing */
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            flex-direction: column; /* Center elements in the column */
         }
-        #product-list img, #hot-sales img {
-            max-width: 120px; /* Increased width for product images */
-            margin-right: 20px; /* Added space to the right */
-            border: 2px solid #009688; /* Teal border around images */
-            border-radius: 5px;
-        }
-        #search-bar {
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #00796b;
-            border-radius: 5px;
-            background: #b2dfdb; /* Light teal background for search */
-            color: #212121;
-        }
-        .hot-sales-container {
-            background: #ffe0b2; /* Light orange background for hot sales */
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 20px;
+        img {
+            max-width: 100px;
+            margin-right: 10px;
         }
         .comment-section {
             margin-top: 10px;
+        }
+        .likes {
+            display: inline-block;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>PLX</h1> <!-- Website name -->
-        
-        <div id="auth-section">
-            <h2>Register</h2>
-            <form id="register-form">
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit">Register</button>
-            </form>
+        <h1>PLX Classifieds App</h1>
 
-            <h2>Login</h2>
-            <form id="login-form">
-                <input type="text" id="login-username" placeholder="Username" required>
-                <input type="password" id="login-password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-        </div>
+        <h2>Add a Product</h2>
+        <input type="text" id="product-title" placeholder="Product Title" required>
+        <input type="text" id="product-description" placeholder="Description" required>
+        <input type="text" id="product-price" placeholder="Price" required>
+        <select id="product-category" required>
+            <option value="">Select Category</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Vehicles">Vehicles</option>
+            <option value="Others">Others</option>
+        </select>
+        <input type="file" id="product-image" accept="image/*" required>
+        <button id="add-product">Add Product</button>
 
-        <div id="product-section" style="display:none;">
-            <h2>Products</h2>
-            <input type="text" id="search-bar" placeholder="Search products..." />
-            <ul id="product-list"></ul>
-            <h3>Add Product</h3>
-            <form id="product-form">
-                <input type="text" id="product-title" placeholder="Title" required>
-                <input type="text" id="product-description" placeholder="Description" required>
-                <input type="text" id="product-category" placeholder="Category" required>
-                <input type="number" id="product-price" placeholder="Price" required>
-                <input type="text" id="product-address" placeholder="Your Address" required>
-                <input type="file" id="product-image" accept="image/*" required>
-                <button type="submit">Add Product</button>
-            </form>
-            
-            <div class="hot-sales-container">
-                <h3>Hot Sales of the Day</h3>
-                <ul id="hot-sales"></ul>
-            </div>
-        </div>
+        <h2>Search Products</h2>
+        <input type="text" id="search-bar" placeholder="Search products..." />
 
-        <div id="user-profile" style="display:none;">
-            <h2>User Profile</h2>
-            <p id="profile-username"></p>
-            <button id="logout-button">Logout</button>
-        </div>
+        <h2>Products</h2>
+        <ul id="product-list"></ul>
     </div>
 
     <script>
-        const products = JSON.parse(localStorage.getItem('products')) || [];
-        let loggedInUser = null;
+        let products = JSON.parse(localStorage.getItem('products')) || [];
 
-        // Register user
-        document.getElementById('register-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Simulate user registration
-            loggedInUser = { username, password };
-            alert('User registered successfully!');
-            document.getElementById('register-form').reset();
-        });
-
-        // Login user
-        document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-
-            // Simulate user login
-            if (loggedInUser && loggedInUser.username === username && loggedInUser.password === password) {
-                alert('Login successful!');
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('product-section').style.display = 'block';
-                document.getElementById('user-profile').style.display = 'block';
-                document.getElementById('profile-username').innerText = `Logged in as: ${username}`;
-                displayProducts();
-                displayHotSales();
-            } else {
-                alert('Invalid credentials');
-            }
-        });
-
-        // Logout user
-        document.getElementById('logout-button').addEventListener('click', function() {
-            loggedInUser = null;
-            document.getElementById('auth-section').style.display = 'block';
-            document.getElementById('product-section').style.display = 'none';
-            document.getElementById('user-profile').style.display = 'none';
-        });
-
-        // Add product
-        document.getElementById('product-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+        // Function to add product
+        document.getElementById('add-product').addEventListener('click', function() {
             const title = document.getElementById('product-title').value;
             const description = document.getElementById('product-description').value;
-            const category = document.getElementById('product-category').value;
             const price = document.getElementById('product-price').value;
-            const address = document.getElementById('product-address').value;
+            const category = document.getElementById('product-category').value;
             const image = document.getElementById('product-image').files[0];
+
+            if (!title || !description || !price || !category || !image) {
+                alert('Please fill in all fields!');
+                return;
+            }
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const product = { title, description, category, price, address, image: e.target.result, likes: 0, dislikes: 0, comments: [] };
+                const product = {
+                    title,
+                    description,
+                    price,
+                    category,
+                    image: e.target.result,
+                    likes: 0,
+                    comments: []
+                };
                 products.push(product);
-                localStorage.setItem('products', JSON.stringify(products)); // Save to local storage
+                localStorage.setItem('products', JSON.stringify(products));
                 displayProducts();
-                displayHotSales();
-                document.getElementById('product-form').reset();
+                clearInputFields();
             };
             reader.readAsDataURL(image);
         });
 
-        // Display products
+        // Function to clear input fields
+        function clearInputFields() {
+            document.getElementById('product-title').value = '';
+            document.getElementById('product-description').value = '';
+            document.getElementById('product-price').value = '';
+            document.getElementById('product-category').value = '';
+            document.getElementById('product-image').value = '';
+        }
+
+        // Function to display products
         function displayProducts() {
             const productList = document.getElementById('product-list');
             productList.innerHTML = '';
@@ -213,68 +140,31 @@
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <img src="${product.image}" alt="${product.title}">
-                    <div>
-                        <strong>${product.title}</strong> (${product.category})<br>
-                        ${product.description}<br>
-                        Price: $${product.price}<br>
-                        Address: ${product.address}<br>
-                        <button onclick="orderProduct(${index})">Order</button>
+                    <strong>${product.title}</strong> (${product.category})<br>
+                    <p>${product.description}</p>
+                    <p>Price: $${product.price}</p>
+                    <span class="likes">👍 Likes: ${product.likes}</span>
+                    <button onclick="likeProduct(${index})">Like</button>
+                    <div class="comment-section">
+                        <input type="text" id="comment-input-${index}" placeholder="Add a comment" />
+                        <button onclick="addComment(${index})">Comment</button>
+                        <div id="comments-${index}">
+                            ${product.comments.map(comment => `<p>${comment}</p>`).join('')}
+                        </div>
                     </div>
                 `;
                 productList.appendChild(li);
             });
         }
 
-        // Display Hot Sales
-        function displayHotSales() {
-            const hotSales = document.getElementById('hot-sales');
-            hotSales.innerHTML = '';
-
-            // Get featured products (for demo purposes, we'll just use the first three)
-            const featuredProducts = products.slice(0, 3);
-
-            featuredProducts.forEach((product, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <img src="${product.image}" alt="${product.title}">
-                    <div>
-                        <strong>${product.title}</strong><br>
-                        Price: $${product.price}<br>
-                        Likes: <span id="likes-${index}">${product.likes}</span>
-                        <button onclick="likeProduct(${index})">👍 Like</button>
-                        <button onclick="dislikeProduct(${index})">👎 Dislike</button>
-                        <div class="comment-section">
-                            <input type="text" id="comment-input-${index}" placeholder="Add a comment" />
-                            <button onclick="addComment(${index})">Comment</button>
-                        </div>
-                        <div id="comments-${index}">${product.comments.map(comment => `<p>${comment}</p>`).join('')}</div>
-                    </div>
-                `;
-                hotSales.appendChild(li);
-            });
-        }
-
-        // Order product
-        function orderProduct(index) {
-            const product = products[index];
-            alert(`You have ordered: ${product.title}\nTotal Price: $${product.price}\nAddress: ${product.address}`);
-        }
-
-        // Like product
+        // Function to like product
         function likeProduct(index) {
             products[index].likes++;
             localStorage.setItem('products', JSON.stringify(products));
-            displayHotSales(); // Refresh the hot sales section
+            displayProducts();
         }
 
-        // Dislike product
-        function dislikeProduct(index) {
-            products[index].dislikes++;
-            localStorage.setItem('products', JSON.stringify(products));
-            displayHotSales(); // Refresh the hot sales section
-        }
-
-        // Add comment
+        // Function to add comment
         function addComment(index) {
             const commentInput = document.getElementById(`comment-input-${index}`);
             const comment = commentInput.value;
@@ -282,13 +172,13 @@
                 products[index].comments.push(comment);
                 localStorage.setItem('products', JSON.stringify(products));
                 commentInput.value = ''; // Clear input
-                displayHotSales(); // Refresh the hot sales section
+                displayProducts(); // Refresh product list
             } else {
                 alert('Please enter a comment!');
             }
         }
 
-        // Search products
+        // Function for searching products
         document.getElementById('search-bar').addEventListener('input', function() {
             const query = this.value.toLowerCase();
             const filteredProducts = products.filter(product => 
@@ -306,17 +196,25 @@
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <img src="${product.image}" alt="${product.title}">
-                    <div>
-                        <strong>${product.title}</strong> (${product.category})<br>
-                        ${product.description}<br>
-                        Price: $${product.price}<br>
-                        Address: ${product.address}<br>
-                        <button onclick="orderProduct(${index})">Order</button>
+                    <strong>${product.title}</strong> (${product.category})<br>
+                    <p>${product.description}</p>
+                    <p>Price: $${product.price}</p>
+                    <span class="likes">👍 Likes: ${product.likes}</span>
+                    <button onclick="likeProduct(${index})">Like</button>
+                    <div class="comment-section">
+                        <input type="text" id="comment-input-${index}" placeholder="Add a comment" />
+                        <button onclick="addComment(${index})">Comment</button>
+                        <div id="comments-${index}">
+                            ${product.comments.map(comment => `<p>${comment}</p>`).join('')}
+                        </div>
                     </div>
                 `;
                 productList.appendChild(li);
             });
         }
+
+        // Initial display of products
+        displayProducts();
     </script>
 </body>
 </html>
