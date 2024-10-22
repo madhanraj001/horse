@@ -104,14 +104,14 @@
             <h2>Register</h2>
             <form id="register-form">
                 <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
+                <input type="password" id="password" placeholder="Password" required minlength="6" title="Password must be at least 6 characters long.">
                 <button type="submit">Register</button>
             </form>
 
             <h2>Login</h2>
             <form id="login-form">
                 <input type="text" id="login-username" placeholder="Username" required>
-                <input type="password" id="login-password" placeholder="Password" required>
+                <input type="password" id="login-password" placeholder="Password" required minlength="6" title="Password must be at least 6 characters long.">
                 <button type="submit">Login</button>
             </form>
         </div>
@@ -125,7 +125,7 @@
                 <input type="text" id="product-title" placeholder="Title" required>
                 <input type="text" id="product-description" placeholder="Description" required>
                 <input type="text" id="product-category" placeholder="Category" required>
-                <input type="number" id="product-price" placeholder="Price" required>
+                <input type="number" id="product-price" placeholder="Price" required min="0" step="0.01">
                 <input type="text" id="product-address" placeholder="Your Address" required>
                 <input type="file" id="product-image" accept="image/*" required>
                 <button type="submit">Add Product</button>
@@ -147,6 +147,49 @@
     <script>
         const products = JSON.parse(localStorage.getItem('products')) || [];
         let loggedInUser = null;
+
+        // Sample products for hot sales
+        const sampleProducts = [
+            {
+                title: "Vintage Chair",
+                description: "A beautiful vintage chair.",
+                category: "Furniture",
+                price: 150,
+                address: "123 Vintage St.",
+                image: "https://via.placeholder.com/120",
+                likes: 0,
+                dislikes: 0,
+                comments: []
+            },
+            {
+                title: "Smartphone",
+                description: "Latest model smartphone.",
+                category: "Electronics",
+                price: 700,
+                address: "456 Tech Ave.",
+                image: "https://via.placeholder.com/120",
+                likes: 0,
+                dislikes: 0,
+                comments: []
+            },
+            {
+                title: "Mountain Bike",
+                description: "Perfect for mountain trails.",
+                category: "Sports",
+                price: 350,
+                address: "789 Bike Ln.",
+                image: "https://via.placeholder.com/120",
+                likes: 0,
+                dislikes: 0,
+                comments: []
+            }
+        ];
+
+        // Initialize with sample products if empty
+        if (products.length === 0) {
+            products.push(...sampleProducts);
+            localStorage.setItem('products', JSON.stringify(products));
+        }
 
         // Register user
         document.getElementById('register-form').addEventListener('submit', function(event) {
@@ -220,7 +263,7 @@
                 li.innerHTML = `
                     <img src="${product.image}" alt="${product.title}">
                     <div>
-                        <strong>${product.title}</strong><br>
+                        <strong>${product.title}</strong> (${product.category})<br>
                         ${product.description}<br>
                         Price: $${product.price}<br>
                         Address: ${product.address}<br>
@@ -246,9 +289,11 @@
                     <div>
                         <strong>${product.title}</strong><br>
                         Price: $${product.price}<br>
-                        Likes: <span id="likes-${index}">${product.likes}</span>
-                        <button onclick="likeProduct(${index})">👍 Like</button>
-                        <button onclick="dislikeProduct(${index})">👎 Dislike</button>
+                        <div class="likes">
+                            Likes: <span id="likes-${index}">${product.likes}</span>
+                            <button onclick="likeProduct(${index})">👍 Like</button>
+                            <button onclick="dislikeProduct(${index})">👎 Dislike</button>
+                        </div>
                         <div class="comment-section">
                             <input type="text" id="comment-input-${index}" placeholder="Add a comment" />
                             <button onclick="addComment(${index})">Comment</button>
