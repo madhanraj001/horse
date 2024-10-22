@@ -120,6 +120,7 @@
             <h2>Products</h2>
             <input type="text" id="search-bar" placeholder="Search products..." />
             <ul id="product-list"></ul>
+
             <h3>Add Product</h3>
             <form id="product-form">
                 <input type="text" id="product-title" placeholder="Title" required>
@@ -130,7 +131,16 @@
                 <input type="file" id="product-image" accept="image/*" required>
                 <button type="submit">Add Product</button>
             </form>
-            
+
+            <h3>Add to Hot Sales of the Day</h3>
+            <form id="hot-sales-form">
+                <input type="text" id="hot-product-title" placeholder="Title" required>
+                <input type="text" id="hot-product-description" placeholder="Description" required>
+                <input type="number" id="hot-product-price" placeholder="Price" required min="0" step="0.01">
+                <input type="file" id="hot-product-image" accept="image/*" required>
+                <button type="submit">Add to Hot Sales</button>
+            </form>
+
             <div class="hot-sales-container">
                 <h3>Hot Sales of the Day</h3>
                 <ul id="hot-sales"></ul>
@@ -146,6 +156,7 @@
 
     <script>
         const products = JSON.parse(localStorage.getItem('products')) || [];
+        const hotSales = JSON.parse(localStorage.getItem('hotSales')) || [];
         let loggedInUser = null;
 
         // Sample products for hot sales
@@ -153,9 +164,7 @@
             {
                 title: "Vintage Chair",
                 description: "A beautiful vintage chair.",
-                category: "Furniture",
                 price: 150,
-                address: "123 Vintage St.",
                 image: "https://via.placeholder.com/120",
                 likes: 0,
                 dislikes: 0,
@@ -164,9 +173,7 @@
             {
                 title: "Smartphone",
                 description: "Latest model smartphone.",
-                category: "Electronics",
                 price: 700,
-                address: "456 Tech Ave.",
                 image: "https://via.placeholder.com/120",
                 likes: 0,
                 dislikes: 0,
@@ -175,9 +182,7 @@
             {
                 title: "Mountain Bike",
                 description: "Perfect for mountain trails.",
-                category: "Sports",
                 price: 350,
-                address: "789 Bike Ln.",
                 image: "https://via.placeholder.com/120",
                 likes: 0,
                 dislikes: 0,
@@ -189,6 +194,12 @@
         if (products.length === 0) {
             products.push(...sampleProducts);
             localStorage.setItem('products', JSON.stringify(products));
+        }
+
+        // Load hot sales from local storage
+        if (hotSales.length === 0) {
+            hotSales.push(...sampleProducts);
+            localStorage.setItem('hotSales', JSON.stringify(hotSales));
         }
 
         // Register user
@@ -215,11 +226,9 @@
                 document.getElementById('auth-section').style.display = 'none';
                 document.getElementById('product-section').style.display = 'block';
                 document.getElementById('user-profile').style.display = 'block';
-                document.getElementById('profile-username').innerText = `Logged in as: ${username}`;
-                displayProducts();
-                displayHotSales();
+                document.getElementById('profile-username').innerText = `Welcome, ${username}!`;
             } else {
-                alert('Invalid credentials');
+                alert('Invalid username or password!');
             }
         });
 
@@ -247,8 +256,26 @@
                 products.push(product);
                 localStorage.setItem('products', JSON.stringify(products)); // Save to local storage
                 displayProducts();
-                displayHotSales();
                 document.getElementById('product-form').reset();
+            };
+            reader.readAsDataURL(image);
+        });
+
+        // Add to Hot Sales
+        document.getElementById('hot-sales-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const title = document.getElementById('hot-product-title').value;
+            const description = document.getElementById('hot-product-description').value;
+            const price = document.getElementById('hot-product-price').value;
+            const image = document.getElementById('hot-product-image').files[0];
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const hotProduct = { title, description, price, image: e.target.result, likes: 0, dislikes: 0, comments: [] };
+                hotSales.push(hotProduct);
+                localStorage.setItem('hotSales', JSON.stringify(hotSales)); // Save to local storage
+                displayHotSales();
+                document.getElementById('hot-sales-form').reset();
             };
             reader.readAsDataURL(image);
         });
@@ -276,13 +303,10 @@
 
         // Display Hot Sales
         function displayHotSales() {
-            const hotSales = document.getElementById('hot-sales');
-            hotSales.innerHTML = '';
+            const hotSalesContainer = document.getElementById('hot-sales');
+            hotSalesContainer.innerHTML = '';
 
-            // Get featured products (for demo purposes, we'll just use the first three)
-            const featuredProducts = products.slice(0, 3);
-
-            featuredProducts.forEach((product, index) => {
+            hotSales.forEach((product, index) => {
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <img src="${product.image}" alt="${product.title}">
@@ -301,7 +325,7 @@
                         <div id="comments-${index}">${product.comments.map(comment => `<p>${comment}</p>`).join('')}</div>
                     </div>
                 `;
-                hotSales.appendChild(li);
+                hotSalesContainer.appendChild(li);
             });
         }
 
@@ -313,15 +337,15 @@
 
         // Like product
         function likeProduct(index) {
-            products[index].likes++;
-            localStorage.setItem('products', JSON.stringify(products));
+            hotSales[index].likes++;
+            localStorage.setItem('hotSales', JSON.stringify(hotSales));
             displayHotSales(); // Refresh the hot sales section
         }
 
         // Dislike product
         function dislikeProduct(index) {
-            products[index].dislikes++;
-            localStorage.setItem('products', JSON.stringify(products));
+            hotSales[index].dislikes++;
+            localStorage.setItem('hotSales', JSON.stringify(hotSales));
             displayHotSales(); // Refresh the hot sales section
         }
 
@@ -330,8 +354,8 @@
             const commentInput = document.getElementById(`comment-input-${index}`);
             const comment = commentInput.value;
             if (comment) {
-                products[index].comments.push(comment);
-                localStorage.setItem('products', JSON.stringify(products));
+                hotSales[index].comments.push(comment);
+                localStorage.setItem('hotSales', JSON.stringify(hotSales));
                 commentInput.value = ''; // Clear input
                 displayHotSales(); // Refresh the hot sales section
             } else {
@@ -368,6 +392,10 @@
                 productList.appendChild(li);
             });
         }
+
+        // Initial display
+        displayProducts();
+        displayHotSales();
     </script>
 </body>
 </html>
