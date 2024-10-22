@@ -13,7 +13,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px; /* Increased max-width for better alignment */
             margin: auto;
             background: #ffffff; /* White background for the container */
             padding: 20px;
@@ -56,8 +56,10 @@
             list-style-type: none;
             padding: 0;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid */
+            grid-template-columns: repeat(2, 1fr); /* 2 columns for better alignment */
             gap: 20px; /* Space between items */
+            max-height: 500px; /* Set a maximum height */
+            overflow-y: auto; /* Enable vertical scrolling */
         }
         #product-list li, #hot-sales li {
             background: #ffffff; /* White background for products */
@@ -69,7 +71,7 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         #product-list img, #hot-sales img {
-            max-width: 120px; /* Increased width for product images */
+            max-width: 100px; /* Set a maximum width for product images */
             margin-bottom: 10px; /* Added space below images */
             border: 2px solid #009688; /* Teal border around images */
             border-radius: 5px;
@@ -104,14 +106,14 @@
             <h2>Register</h2>
             <form id="register-form">
                 <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required minlength="6" title="Password must be at least 6 characters long.">
+                <input type="password" id="password" placeholder="Password" required>
                 <button type="submit">Register</button>
             </form>
 
             <h2>Login</h2>
             <form id="login-form">
                 <input type="text" id="login-username" placeholder="Username" required>
-                <input type="password" id="login-password" placeholder="Password" required minlength="6" title="Password must be at least 6 characters long.">
+                <input type="password" id="login-password" placeholder="Password" required>
                 <button type="submit">Login</button>
             </form>
         </div>
@@ -120,29 +122,26 @@
             <h2>Products</h2>
             <input type="text" id="search-bar" placeholder="Search products..." />
             <ul id="product-list"></ul>
-
             <h3>Add Product</h3>
             <form id="product-form">
                 <input type="text" id="product-title" placeholder="Title" required>
                 <input type="text" id="product-description" placeholder="Description" required>
                 <input type="text" id="product-category" placeholder="Category" required>
-                <input type="number" id="product-price" placeholder="Price" required min="0" step="0.01">
+                <input type="number" id="product-price" placeholder="Price" required>
                 <input type="text" id="product-address" placeholder="Your Address" required>
                 <input type="file" id="product-image" accept="image/*" required>
                 <button type="submit">Add Product</button>
             </form>
-
-            <h3>Add to Hot Sales of the Day</h3>
-            <form id="hot-sales-form">
-                <input type="text" id="hot-product-title" placeholder="Title" required>
-                <input type="text" id="hot-product-description" placeholder="Description" required>
-                <input type="number" id="hot-product-price" placeholder="Price" required min="0" step="0.01">
-                <input type="file" id="hot-product-image" accept="image/*" required>
-                <button type="submit">Add to Hot Sales</button>
-            </form>
-
+            
             <div class="hot-sales-container">
                 <h3>Hot Sales of the Day</h3>
+                <form id="hot-sales-form">
+                    <input type="text" id="hot-product-title" placeholder="Title" required>
+                    <input type="text" id="hot-product-description" placeholder="Description" required>
+                    <input type="number" id="hot-product-price" placeholder="Price" required>
+                    <input type="file" id="hot-product-image" accept="image/*" required>
+                    <button type="submit">Add Hot Sale</button>
+                </form>
                 <ul id="hot-sales"></ul>
             </div>
         </div>
@@ -158,49 +157,6 @@
         const products = JSON.parse(localStorage.getItem('products')) || [];
         const hotSales = JSON.parse(localStorage.getItem('hotSales')) || [];
         let loggedInUser = null;
-
-        // Sample products for hot sales
-        const sampleProducts = [
-            {
-                title: "Vintage Chair",
-                description: "A beautiful vintage chair.",
-                price: 150,
-                image: "https://via.placeholder.com/120",
-                likes: 0,
-                dislikes: 0,
-                comments: []
-            },
-            {
-                title: "Smartphone",
-                description: "Latest model smartphone.",
-                price: 700,
-                image: "https://via.placeholder.com/120",
-                likes: 0,
-                dislikes: 0,
-                comments: []
-            },
-            {
-                title: "Mountain Bike",
-                description: "Perfect for mountain trails.",
-                price: 350,
-                image: "https://via.placeholder.com/120",
-                likes: 0,
-                dislikes: 0,
-                comments: []
-            }
-        ];
-
-        // Initialize with sample products if empty
-        if (products.length === 0) {
-            products.push(...sampleProducts);
-            localStorage.setItem('products', JSON.stringify(products));
-        }
-
-        // Load hot sales from local storage
-        if (hotSales.length === 0) {
-            hotSales.push(...sampleProducts);
-            localStorage.setItem('hotSales', JSON.stringify(hotSales));
-        }
 
         // Register user
         document.getElementById('register-form').addEventListener('submit', function(event) {
@@ -227,6 +183,8 @@
                 document.getElementById('product-section').style.display = 'block';
                 document.getElementById('user-profile').style.display = 'block';
                 document.getElementById('profile-username').innerText = `Welcome, ${username}!`;
+                displayProducts();
+                displayHotSales();
             } else {
                 alert('Invalid username or password!');
             }
@@ -261,7 +219,7 @@
             reader.readAsDataURL(image);
         });
 
-        // Add to Hot Sales
+        // Add hot sale
         document.getElementById('hot-sales-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const title = document.getElementById('hot-product-title').value;
@@ -271,8 +229,8 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const hotProduct = { title, description, price, image: e.target.result, likes: 0, dislikes: 0, comments: [] };
-                hotSales.push(hotProduct);
+                const hotSale = { title, description, price, image: e.target.result, likes: 0, dislikes: 0, comments: [] };
+                hotSales.push(hotSale);
                 localStorage.setItem('hotSales', JSON.stringify(hotSales)); // Save to local storage
                 displayHotSales();
                 document.getElementById('hot-sales-form').reset();
@@ -303,29 +261,27 @@
 
         // Display Hot Sales
         function displayHotSales() {
-            const hotSalesContainer = document.getElementById('hot-sales');
-            hotSalesContainer.innerHTML = '';
+            const hotSalesList = document.getElementById('hot-sales');
+            hotSalesList.innerHTML = '';
 
-            hotSales.forEach((product, index) => {
+            hotSales.forEach((sale, index) => {
                 const li = document.createElement('li');
                 li.innerHTML = `
-                    <img src="${product.image}" alt="${product.title}">
+                    <img src="${sale.image}" alt="${sale.title}">
                     <div>
-                        <strong>${product.title}</strong><br>
-                        Price: $${product.price}<br>
-                        <div class="likes">
-                            Likes: <span id="likes-${index}">${product.likes}</span>
-                            <button onclick="likeProduct(${index})">👍 Like</button>
-                            <button onclick="dislikeProduct(${index})">👎 Dislike</button>
-                        </div>
+                        <strong>${sale.title}</strong><br>
+                        Price: $${sale.price}<br>
+                        Likes: <span id="likes-${index}">${sale.likes}</span>
+                        <button onclick="likeHotSale(${index})">👍 Like</button>
+                        <button onclick="dislikeHotSale(${index})">👎 Dislike</button>
                         <div class="comment-section">
                             <input type="text" id="comment-input-${index}" placeholder="Add a comment" />
-                            <button onclick="addComment(${index})">Comment</button>
+                            <button onclick="addCommentToHotSale(${index})">Comment</button>
                         </div>
-                        <div id="comments-${index}">${product.comments.map(comment => `<p>${comment}</p>`).join('')}</div>
+                        <div id="comments-${index}">${sale.comments.map(comment => `<p>${comment}</p>`).join('')}</div>
                     </div>
                 `;
-                hotSalesContainer.appendChild(li);
+                hotSalesList.appendChild(li);
             });
         }
 
@@ -335,22 +291,22 @@
             alert(`You have ordered: ${product.title}\nTotal Price: $${product.price}\nAddress: ${product.address}`);
         }
 
-        // Like product
-        function likeProduct(index) {
+        // Like hot sale
+        function likeHotSale(index) {
             hotSales[index].likes++;
             localStorage.setItem('hotSales', JSON.stringify(hotSales));
             displayHotSales(); // Refresh the hot sales section
         }
 
-        // Dislike product
-        function dislikeProduct(index) {
+        // Dislike hot sale
+        function dislikeHotSale(index) {
             hotSales[index].dislikes++;
             localStorage.setItem('hotSales', JSON.stringify(hotSales));
             displayHotSales(); // Refresh the hot sales section
         }
 
-        // Add comment
-        function addComment(index) {
+        // Add comment to hot sale
+        function addCommentToHotSale(index) {
             const commentInput = document.getElementById(`comment-input-${index}`);
             const comment = commentInput.value;
             if (comment) {
@@ -392,10 +348,6 @@
                 productList.appendChild(li);
             });
         }
-
-        // Initial display
-        displayProducts();
-        displayHotSales();
     </script>
 </body>
 </html>
