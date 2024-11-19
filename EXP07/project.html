@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .task-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .task-table th, .task-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        .task-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .task-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group input, .form-group select, .form-group button {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .status-count {
+            font-size: 16px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e2f7e7;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Project Management Dashboard</h1>
+
+    <h2>Task List</h2>
+    <table class="task-table" id="task-table">
+        <thead>
+            <tr>
+                <th>Task ID</th>
+                <th>Task Name</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Task rows will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+
+    <h2>Add New Task</h2>
+    <div class="form-group">
+        <label for="task-name">Task Name</label>
+        <input type="text" id="task-name" placeholder="Enter task name">
+    </div>
+    <div class="form-group">
+        <label for="assigned-to">Assigned To</label>
+        <input type="text" id="assigned-to" placeholder="Enter assignee name">
+    </div>
+    <div class="form-group">
+        <label for="due-date">Due Date</label>
+        <input type="date" id="due-date">
+    </div>
+    <button class="button" id="add-task-btn">Add Task</button>
+
+    <h2>Update Task Status</h2>
+    <div class="form-group">
+        <label for="task-id-update">Enter Task ID to Update</label>
+        <input type="number" id="task-id-update" placeholder="Task ID" min="1">
+    </div>
+    <div class="form-group">
+        <label for="task-status-update">Select New Status</label>
+        <select id="task-status-update">
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+    </div>
+    <button class="button" id="update-status-btn">Update Status</button>
+
+    <div class="status-count">
+        <p><strong>Total Pending Tasks: <span id="pending-count">0</span></strong></p>
+    </div>
+</div>
+
+<script>
+    // Utility function to generate a new task ID
+    function generateTaskId() {
+        const tasks = getTasksFromLocalStorage();
+        return tasks.length > 0 ? Math.max(...tasks.map(task => task.id)) + 1 : 1;
+    }
+
+    // Function to load tasks from local storage
+    function getTasksFromLocalStorage() {
+        const tasks = localStorage.getItem("tasks");
+        return tasks ? JSON.parse(tasks) : [];
+    }
+
+    // Function to save tasks to local storage
+    function saveTasksToLocalStorage(tasks) {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    // Function to render the tasks table
+    function renderTasks() {
+        const tasks = getTasksFromLocalStorage();
+        const taskTableBody = document.querySelector("#task-table tbody");
+        taskTableBody.innerHTML = ""; // Clear the current rows
+
+        tasks.forEach(task => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${task.id}</td>
+                <td>${task.name}</td>
+                <td>${task.status}</td>
+                <td>${task.assignedTo}</td>
+                <td>${task.dueDate}</td>
+                <td>
+                    <button class="button" onclick="deleteTask(${task.id})">Delete</button>
+                </td>
+            `;
+            taskTableBody.appendChild(row);
+        });
+
+        updatePendingCount();
+    }
+
+    // Function to update the count of pending tasks
+    function updatePendingCount() {
+        const tasks = getTasksFromLocalStorage();
+        const pendingTasks = tasks.filter(task => task.status === "Pending");
+        document.getElementById("pending-count").innerText = pendingTasks.length;
+    }
+
+    // Function to add a new task
+    document.getElementById("add-task-btn").addEventListener("click", function() {
+        const name = document.getElementById("task-name").value;
+        const assignedTo = document.getElementById("assigned-to").value;
+        const dueDate = document.getElementById("due-date").value;
+
+        if (name && assignedTo && dueDate) {
+            const newTask = {
+                id: generateTaskId(),
+                name,
+                assignedTo,
+                dueDate,
+                status: "Pending"
+            };
+            const tasks = getTasksFromLocalStorage();
+            tasks.push(newTask);
+            saveTasksToLocalStorage(tasks);
+
+            // Clear input fields
+            document.getElementById("task-name").value = "";
+            document.getElementById("assigned-to").value = "";
+            document.getElementById("due-date").value = "";
+
+            renderTasks(); // Re-render the task table
+        } else {
+            alert("Please fill out all fields.");
+        }
+    });
+
+    // Function to update the status of a task
+    document.getElementById("update-status-btn").addEventListener("click", function() {
+        const taskId = parseInt(document.getElementById("task-id-update").value);
+        const status = document.getElementById("task-status-update").value;
+
+        if (taskId && status) {
+            const tasks = getTasksFromLocalStorage();
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = status;
+                saveTasksToLocalStorage(tasks);
+                renderTasks(); // Re-render the task table
+            } else {
+                alert("Task ID not found.");
+            }
+        } else {
+            alert("Please provide a valid Task ID and Status.");
+        }
+    });
+
+    // Function to delete a task
+    function deleteTask(taskId) {
+        const tasks = getTasksFromLocalStorage();
+        const updatedTasks = tasks.filter(task => task.id !== taskId);
+        saveTasksToLocalStorage(updatedTasks);
+        renderTasks(); // Re-render the task table
+    }
+
+    // Initialize the dashboard by rendering tasks
+    renderTasks();
+</script>
+
+</body>
+</html>
